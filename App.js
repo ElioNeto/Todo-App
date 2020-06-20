@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import ToDoItem from './src/components/Todo';
+import ModalApp from './src/components/Modal';
 import {db} from './src/config';
 
 class App extends React.Component {
@@ -47,6 +48,10 @@ class App extends React.Component {
   clearTodos() {
     db.ref('/todos').remove();
   }
+
+  sendData() {
+    console.log('chegou carai');
+  }
   render() {
     let todosKeys = Object.keys(this.state.todos);
     return (
@@ -70,6 +75,7 @@ class App extends React.Component {
             onPress={this.addNewTodo}
             color="lightgreen"
           />
+          {/*  <ModalApp sendData={this.sendData} /> */}
 
           <View style={styles.list}>
             {todosKeys.length > 0 ? (
