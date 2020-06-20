@@ -19,11 +19,18 @@ class App extends React.Component {
     this.state = {
       todos: {},
       presentToDo: '',
+      base: '/todosTest',
+      flg: false,
     };
     this.addNewTodo = this.addNewTodo.bind(this);
+    this.clearTodos = this.clearTodos.bind(this);
+    this.sendData = this.sendData.bind(this);
+    this.showAll = this.showAll.bind(this);
+    this.showToDo = this.showToDo.bind(this);
   }
+
   componentDidMount() {
-    db.ref('/todos').on('value', (querySnapShot) => {
+    db.ref(this.state.base).on('value', (querySnapShot) => {
       let data = querySnapShot.val() ? querySnapShot.val() : {};
       let todoItems = {...data};
       this.setState({
@@ -31,12 +38,13 @@ class App extends React.Component {
       });
     });
   }
+
   addNewTodo() {
     if (!this.state.presentToDo) {
       Alert.alert('Warning!', 'Empty text not accept');
       return;
     }
-    db.ref('/todos').push({
+    db.ref(this.state.base).push({
       done: false,
       todoItem: this.state.presentToDo,
     });
@@ -45,13 +53,31 @@ class App extends React.Component {
       presentToDo: '',
     });
   }
+
   clearTodos() {
-    db.ref('/todos').remove();
+    db.ref(this.state.base).remove();
   }
 
-  sendData() {
-    console.log('chegou carai');
+  sendData(data) {
+    if (!data) {
+      Alert.alert('Warning!', 'Empty text not accept');
+      return;
+    }
+    db.ref(this.state.base).push({
+      done: false,
+      todoItem: data.item,
+    });
+    Alert.alert('Action!', 'A new To-do item was created');
   }
+
+  showAll() {
+    this.setState({flg: true});
+  }
+
+  showToDo() {
+    this.setState({flg: false});
+  }
+
   render() {
     let todosKeys = Object.keys(this.state.todos);
     return (
@@ -59,28 +85,18 @@ class App extends React.Component {
         <ScrollView
           style={styles.container}
           contentContainerStyle={styles.contentContainerStyle}>
-          <TextInput
-            placeholder="Add new Todo"
-            value={this.state.presentToDo}
-            style={styles.textInput}
-            onChangeText={(e) => {
-              this.setState({
-                presentToDo: e,
-              });
-            }}
-            onSubmitEditing={this.addNewTodo}
-          />
-          <Button
-            title="Add new To do item"
-            onPress={this.addNewTodo}
-            color="lightgreen"
-          />
-          {/*  <ModalApp sendData={this.sendData} /> */}
+          <ModalApp sendData={this.sendData} />
 
           <View style={styles.list}>
             {todosKeys.length > 0 ? (
               todosKeys.map((key) => (
-                <ToDoItem key={key} id={key} todoItem={this.state.todos[key]} />
+                <ToDoItem
+                  key={key}
+                  id={key}
+                  todoItem={this.state.todos[key]}
+                  base={this.state.base}
+                  flg={this.state.flg}
+                />
               ))
             ) : (
               <Text>No todo item</Text>
@@ -88,7 +104,11 @@ class App extends React.Component {
           </View>
         </ScrollView>
         <View style={styles.done}>
-          <Button title="Show all" onPress={() => {}} color="blue" />
+          {!this.state.flg ? (
+            <Button title="Show all" onPress={this.showAll} color="blue" />
+          ) : (
+            <Button title="Show ToDo" onPress={this.showToDo} color="blue" />
+          )}
         </View>
         <View style={styles.clear}>
           <Button title="Clear todos" onPress={this.clearTodos} color="red" />

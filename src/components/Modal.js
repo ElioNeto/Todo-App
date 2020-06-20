@@ -11,9 +11,15 @@ import {
 
 const ModalApp = ({sendData}) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [item, setItem] = useState('');
 
   function submit() {
-    sendData({});
+    if (item === '') {
+      Alert.alert('Warning!', 'Empty text not accept');
+      return;
+    }
+    sendData({item});
+    setItem('');
   }
   return (
     <View style={styles.centeredView}>
@@ -26,20 +32,24 @@ const ModalApp = ({sendData}) => {
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Hello World!</Text>
-            <TextInput style={styles.textInput} />
-            <TouchableHighlight
-              style={{...styles.openButton, backgroundColor: '#2196F3'}}
-              onPress={submit}>
-              <Text style={styles.textStyle}>teste</Text>
+            <Text style={styles.modalText}>Tasks</Text>
+            <TextInput
+              placeholder="Add new Todo"
+              value={item}
+              style={styles.textInput}
+              onChangeText={(text) => setItem(text)}
+              onSubmitEditing={this.submit}
+            />
+            <TouchableHighlight style={styles.store} onPress={submit}>
+              <Text style={styles.textStyle}>Save</Text>
             </TouchableHighlight>
 
             <TouchableHighlight
-              style={{...styles.openButton, backgroundColor: '#2196F3'}}
+              style={styles.close}
               onPress={() => {
                 setModalVisible(!modalVisible);
               }}>
-              <Text style={styles.textStyle}>Hide Modal</Text>
+              <Text style={styles.textClose}>Close</Text>
             </TouchableHighlight>
           </View>
         </View>
@@ -50,7 +60,7 @@ const ModalApp = ({sendData}) => {
         onPress={() => {
           setModalVisible(true);
         }}>
-        <Text style={styles.textStyle}>Show Modal</Text>
+        <Text style={styles.textStyle}>Add Task</Text>
       </TouchableHighlight>
     </View>
   );
@@ -85,9 +95,15 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
+    marginTop: 20,
   },
   textStyle: {
     color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  textClose: {
+    color: '#000',
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -104,6 +120,24 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     fontSize: 20,
     marginTop: 60,
+  },
+  close: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    backgroundColor: '#fff',
+  },
+  store: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    backgroundColor: '#39ff14',
   },
 });
 

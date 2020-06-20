@@ -11,13 +11,17 @@ import {
 import CheckBox from 'react-native-check-box';
 
 import {db} from '../config';
-
-const ToDoItem = ({todoItem: {todoItem: name, done}, id}) => {
+export default function ToDoItem({
+  todoItem: {todoItem: name, done},
+  id,
+  base,
+  flg,
+}) {
   const [doneState, setDone] = useState(done);
 
   const onCheck = () => {
     setDone(!doneState);
-    db.ref('/todos').update({
+    db.ref(base).update({
       [id]: {
         todoItem: name,
         done: !doneState,
@@ -26,18 +30,38 @@ const ToDoItem = ({todoItem: {todoItem: name, done}, id}) => {
   };
 
   return (
-    <View style={styles.todoItem}>
-      <CheckBox
-        checkBoxColor="skyblue"
-        onClick={onCheck}
-        isChecked={doneState}
-      />
-      <Text style={[styles.todoText, {opacity: doneState ? 0.2 : 1}]}>
-        {name}
-      </Text>
-    </View>
+    <>
+      {!done && !flg ? (
+        <View style={styles.todoItem}>
+          <CheckBox
+            checkBoxColor="skyblue"
+            onClick={onCheck}
+            isChecked={doneState}
+          />
+          <Text style={[styles.todoText, {opacity: doneState ? 0.2 : 1}]}>
+            {name}
+          </Text>
+        </View>
+      ) : (
+        <></>
+      )}
+      {flg ? (
+        <View style={styles.todoItem}>
+          <CheckBox
+            checkBoxColor="skyblue"
+            onClick={onCheck}
+            isChecked={doneState}
+          />
+          <Text style={[styles.todoText, {opacity: doneState ? 0.2 : 1}]}>
+            {name}
+          </Text>
+        </View>
+      ) : (
+        <></>
+      )}
+    </>
   );
-};
+}
 const styles = StyleSheet.create({
   todoItem: {
     flexDirection: 'row',
@@ -55,4 +79,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-export default ToDoItem;
