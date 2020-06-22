@@ -11,6 +11,8 @@ import {
 
 import ToDoItem from './src/components/Todo';
 import ModalApp from './src/components/Modal';
+import Choice from './src/components/Choice';
+
 import {db} from './src/config';
 
 class App extends React.Component {
@@ -27,6 +29,7 @@ class App extends React.Component {
     this.sendData = this.sendData.bind(this);
     this.showAll = this.showAll.bind(this);
     this.showToDo = this.showToDo.bind(this);
+    this.selectDatabase = this.selectDatabase.bind(this);
   }
 
   componentDidMount() {
@@ -70,6 +73,21 @@ class App extends React.Component {
     Alert.alert('Action!', 'A new To-do item was created');
   }
 
+  selectDatabase(data) {
+    this.setState({
+      todos: [],
+    });
+    let base = data.database;
+    this.setState({base: base});
+    db.ref(base).on('value', (querySnapShot) => {
+      let snap = querySnapShot.val() ? querySnapShot.val() : {};
+      let todoItems = {...snap};
+      this.setState({
+        todos: todoItems,
+      });
+    });
+  }
+
   showAll() {
     this.setState({flg: true});
   }
@@ -86,6 +104,7 @@ class App extends React.Component {
           style={styles.container}
           contentContainerStyle={styles.contentContainerStyle}>
           <ModalApp sendData={this.sendData} />
+          <Choice databaseOption={this.selectDatabase} />
 
           <View style={styles.list}>
             {todosKeys.length > 0 ? (
