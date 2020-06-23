@@ -1,13 +1,5 @@
 import React, {useState} from 'react';
-import {
-  StyleSheet,
-  Alert,
-  View,
-  Text,
-  Button,
-  ScrollView,
-  TextInput,
-} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import CheckBox from 'react-native-check-box';
 
 import {db} from '../config';

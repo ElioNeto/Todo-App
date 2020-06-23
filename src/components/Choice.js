@@ -1,28 +1,32 @@
 import React, {useState} from 'react';
 import {View, Picker, StyleSheet, Button} from 'react-native';
 
+import DropDownPicker from 'react-native-dropdown-picker';
+import Feather from 'react-native-vector-icons/Feather';
+Feather.loadFont();
+
 export default function Choice({databaseOption}) {
-  const [database, setDatabase] = useState('todosTest');
-  function submit() {
-    databaseOption({database});
-  }
   return (
     <View style={styles.container}>
-      <Picker
-        selectedValue={database}
-        style={{height: 50, width: 150}}
-        onValueChange={(itemValue, itemIndex) => setDatabase(itemValue)}>
-        <Picker.Item label="Test" value="/todosTest" />
-        <Picker.Item label="PRD" value="/todos" />
-      </Picker>
-      <Button title="Change" onPress={submit} />
+      <DropDownPicker
+        items={[
+          {label: 'TEST', value: '/todosTest'},
+          {label: 'PRD', value: '/todos'},
+        ]}
+        labelStyle={{fontSize: 14, color: '#000'}}
+        dropDownStyle={{backgroundColor: '#fafafa'}}
+        defaultIndex={0}
+        containerStyle={{height: 40, width: 200}}
+        onChangeItem={(item) => databaseOption({database: item.value})}
+        placeholder="Switch the database"
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    marginBottom: 60,
+    alignItems: 'stretch',
+    marginTop: 60,
   },
 });

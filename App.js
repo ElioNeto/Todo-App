@@ -103,9 +103,8 @@ class App extends React.Component {
         <ScrollView
           style={styles.container}
           contentContainerStyle={styles.contentContainerStyle}>
+          <Choice databaseOption={this.selectDatabase} style={styles.choice} />
           <ModalApp sendData={this.sendData} />
-          <Choice databaseOption={this.selectDatabase} />
-
           <View style={styles.list}>
             {todosKeys.length > 0 ? (
               todosKeys.map((key) => (
@@ -138,6 +137,12 @@ class App extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  choice: {
+    flex: 5,
+    backgroundColor: 'white',
+    marginBottom: 110,
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',
