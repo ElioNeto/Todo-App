@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  ScrollView,
-  View,
-  Button,
-  TextInput,
-  Alert,
-  Text,
-} from 'react-native';
+import {StyleSheet, ScrollView, View, Button, Alert, Text} from 'react-native';
 
 import ToDoItem from './src/components/Todo';
 import ModalApp from './src/components/Modal';
@@ -21,8 +13,9 @@ class App extends React.Component {
     this.state = {
       todos: {},
       presentToDo: '',
-      base: '/todosTest',
+      base: '/initial',
       flg: false,
+      view: 'initial',
     };
     this.addNewTodo = this.addNewTodo.bind(this);
     this.clearTodos = this.clearTodos.bind(this);
@@ -86,6 +79,9 @@ class App extends React.Component {
         todos: todoItems,
       });
     });
+    base === '/todosTest' ? this.setState({view: 'ToDo'}) : {};
+    base === '/todos' ? this.setState({view: 'ToDo'}) : {};
+    base === '/agendaTest' ? this.setState({view: 'Agenda'}) : {};
   }
 
   showAll() {
@@ -100,37 +96,113 @@ class App extends React.Component {
     let todosKeys = Object.keys(this.state.todos);
     return (
       <>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainerStyle}>
-          <Choice databaseOption={this.selectDatabase} style={styles.choice} />
-          <ModalApp sendData={this.sendData} />
-          <View style={styles.list}>
-            {todosKeys.length > 0 ? (
-              todosKeys.map((key) => (
-                <ToDoItem
-                  key={key}
-                  id={key}
-                  todoItem={this.state.todos[key]}
-                  base={this.state.base}
-                  flg={this.state.flg}
+        {this.state.view === 'initial' ? (
+          <>
+            <ScrollView
+              style={styles.container}
+              contentContainerStyle={styles.contentContainerStyle}>
+              <Choice
+                databaseOption={this.selectDatabase}
+                style={styles.choice}
+              />
+              <View style={styles.list}>
+                {todosKeys.length > 0 ? (
+                  todosKeys.map((key) => (
+                    <ToDoItem
+                      key={key}
+                      id={key}
+                      todoItem={this.state.todos[key]}
+                      base={this.state.base}
+                      flg={true}
+                    />
+                  ))
+                ) : (
+                  <Text>No todo item</Text>
+                )}
+              </View>
+            </ScrollView>
+          </>
+        ) : (
+          <></>
+        )}
+        {this.state.view === 'ToDo' ? (
+          <>
+            <ScrollView
+              style={styles.container}
+              contentContainerStyle={styles.contentContainerStyle}>
+              <Choice
+                databaseOption={this.selectDatabase}
+                style={styles.choice}
+              />
+              <ModalApp sendData={this.sendData} />
+              <View style={styles.list}>
+                {todosKeys.length > 0 ? (
+                  todosKeys.map((key) => (
+                    <ToDoItem
+                      key={key}
+                      id={key}
+                      todoItem={this.state.todos[key]}
+                      base={this.state.base}
+                      flg={this.state.flg}
+                    />
+                  ))
+                ) : (
+                  <Text>No todo item</Text>
+                )}
+              </View>
+            </ScrollView>
+            <View style={styles.done}>
+              {!this.state.flg ? (
+                <Button title="Show all" onPress={this.showAll} color="blue" />
+              ) : (
+                <Button
+                  title="Show ToDo"
+                  onPress={this.showToDo}
+                  color="blue"
                 />
-              ))
-            ) : (
-              <Text>No todo item</Text>
-            )}
-          </View>
-        </ScrollView>
-        <View style={styles.done}>
-          {!this.state.flg ? (
-            <Button title="Show all" onPress={this.showAll} color="blue" />
-          ) : (
-            <Button title="Show ToDo" onPress={this.showToDo} color="blue" />
-          )}
-        </View>
-        <View style={styles.clear}>
-          <Button title="Clear todos" onPress={this.clearTodos} color="red" />
-        </View>
+              )}
+            </View>
+            <View style={styles.clear}>
+              <Button
+                title="Clear todos"
+                onPress={this.clearTodos}
+                color="red"
+              />
+            </View>
+          </>
+        ) : (
+          <></>
+        )}
+        {this.state.view === 'Agenda' ? (
+          <>
+            <ScrollView
+              style={styles.container}
+              contentContainerStyle={styles.contentContainerStyle}>
+              <Choice
+                databaseOption={this.selectDatabase}
+                style={styles.choice}
+              />
+              {/* <ModalApp sendData={this.sendData} /> */}
+              <View style={styles.list}>
+                {todosKeys.length > 0 ? (
+                  todosKeys.map((key) => (
+                    <ToDoItem
+                      key={key}
+                      id={key}
+                      todoItem={this.state.todos[key]}
+                      base={this.state.base}
+                      flg={this.state.flg}
+                    />
+                  ))
+                ) : (
+                  <Text>No todo item</Text>
+                )}
+              </View>
+            </ScrollView>
+          </>
+        ) : (
+          <></>
+        )}
       </>
     );
   }
@@ -140,8 +212,8 @@ const styles = StyleSheet.create({
   choice: {
     flex: 5,
     backgroundColor: 'white',
-    marginBottom: 110,
     alignItems: 'center',
+    marginBottom: 110,
   },
   container: {
     flex: 1,
